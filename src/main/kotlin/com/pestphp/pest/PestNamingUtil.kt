@@ -32,6 +32,15 @@ fun PsiElement.toPestTestRegex(workingDirectory: String): String? {
     )
 }
 
+fun PsiElement.toPestFqn(): String? {
+    val testName = this.getPestTestName() ?: return null
+
+    val file = this.containingFile.virtualFile.path
+    val mappedFile = PhpPathMapper.create(this.project).getRemoteFilePath(file) ?: file
+
+    return "pest_qn://$mappedFile::$testName"
+}
+
 fun String.toPestTestRegex(workingDirectory: String, file: String, pathMapper: PhpPathMapper): String {
     val mappedWorkingDirectory = pathMapper.getRemoteFilePath(workingDirectory) ?: workingDirectory
     val mappedFile = pathMapper.getRemoteFilePath(file) ?: file

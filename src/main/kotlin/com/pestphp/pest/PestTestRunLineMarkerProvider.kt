@@ -8,14 +8,12 @@ import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl
 
 class PestTestRunLineMarkerProvider : RunLineMarkerContributor() {
     override fun getInfo(leaf: PsiElement): Info? {
-        if (!PhpPsiUtil.isOfType(leaf, PhpTokenTypes.IDENTIFIER)) {
-            return null
-        }
+        if (!PhpPsiUtil.isOfType(leaf, PhpTokenTypes.IDENTIFIER)) return null
 
-        if (leaf.parent !is FunctionReferenceImpl || !leaf.parent.isPestTestReference()) {
-            return null
-        }
+        if (leaf.parent !is FunctionReferenceImpl || !leaf.parent.isPestTestReference()) return null
 
-        return withExecutorActions(PestIcons.RUN_SINGLE_TEST)
+        val fqn = leaf.parent.toPestFqn() ?: return null
+
+        return withExecutorActions(getTestStateIcon(fqn, leaf.project, false))
     }
 }
